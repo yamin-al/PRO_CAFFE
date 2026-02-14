@@ -116,7 +116,24 @@
             color: var(--gold-color);
             font-family: 'Cinzel', serif;
             font-size: 0.7}
-    </style>
+    
+.lang-btn{
+margin:15px;
+padding:8px 15px;
+border:none;
+background:#2c1810;
+color:white;
+border-radius:6px;
+cursor:pointer;
+}
+
+.rating{
+margin-top:5px;
+color:gold;
+font-size:14px;
+}
+
+</style>
 </head>
 <body>
 
@@ -126,7 +143,10 @@
      <h3> مكان يشبهك </h3>
 </div>
 
-<h2 class="sections-header">قائمة الأصناف</h2>
+
+<button class="lang-btn" onclick="toggleLanguage()" id="langBtn">English</button>
+
+<h2 class="sections-header" data-ar="قائمة الأصناف" data-en="Menu">قائمة الأصناف</h2>
 
 <button class="accordion" onclick="togglePanel(this)">ساخن   <span>+</span></button>
 <div class="panel">
@@ -240,7 +260,7 @@
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1R6_xS2R6FxacuM3K1MGoZcv7p_38vAJzqw&s">
             <div class="card-info">
                 <h3>بيبسي</h3>
-                <span class="price">15</span>
+                <span class="price">15 SYP</span>
             </div>
         </div>
         </div>
@@ -809,33 +829,101 @@
     <div class="dev-credit">Developed By: Yamin Alghathwan</div>
 </footer>
 
+
 <script>
-    function togglePanel(btn) {
-        var panel = btn.nextElementSibling;
-        var icon = btn.querySelector('span');
+function togglePanel(btn) {
+    var panel = btn.nextElementSibling;
+    var icon = btn.querySelector('span');
 
-        // إغلاق أي قائمة أخرى مفتوحة (اختياري لجعل الشكل أرتب)
-        /*
-        var allPanels = document.querySelectorAll('.panel');
-        allPanels.forEach(p => {
-            if(p !== panel) p.style.display = "none";
-        });
-        */
+    var allPanels = document.querySelectorAll('.panel');
+    var allButtons = document.querySelectorAll('.accordion');
 
-        if (panel.style.display === "block") {
-            panel.style.display = "none";
-            icon.innerHTML = "+";
-            btn.style.background = "white";
-            btn.style.color = "#2c1810";
-        } else {
-            panel.style.display = "block";
-            icon.innerHTML = "-";
-            btn.style.background = "#2c1810";
-            btn.style.color = "#c5a059";
-        }
+    // Close all panels first
+    allPanels.forEach(function(p) {
+        p.style.display = "none";
+    });
+
+    allButtons.forEach(function(b) {
+        b.querySelector('span').innerHTML = "+";
+        b.style.background = "white";
+        b.style.color = "#2c1810";
+    });
+
+    // If the clicked one was closed, open it
+    if (panel.style.display !== "block") {
+        panel.style.display = "block";
+        icon.innerHTML = "-";
+        btn.style.background = "#2c1810";
+        btn.style.color = "#c5a059";
     }
+}
+</script>
+
+
+
+<script>
+/* تبديل اللغة */
+let currentLang="ar";
+
+const dictionary={
+"ساخن":"Hot Drinks",
+"مشروبات غازية":"Soft Drinks",
+"الكريب":"Crepes",
+"بان كيك":"Pancakes",
+"براونز":"Brownies",
+"عصاىْر":"Juices",
+"كوكتيلات":"Cocktails",
+"موهيتو":"Mojito",
+"اينيرجي":"Energy Drinks",
+"ميلك شيك":"Milkshake",
+"امبراطور":"Special Drinks",
+"سلطة فواكة":"Fruit Salad",
+"اراكيل":"Shisha"
+};
+
+function toggleLanguage(){
+const htmlTag=document.documentElement;
+const btn=document.getElementById("langBtn");
+
+if(currentLang==="ar"){
+currentLang="en";
+htmlTag.dir="ltr";
+htmlTag.lang="en";
+btn.innerText="العربية";
+}else{
+currentLang="ar";
+htmlTag.dir="rtl";
+htmlTag.lang="ar";
+btn.innerText="English";
+}
+
+document.querySelectorAll("[data-ar]").forEach(el=>{
+el.innerText=el.getAttribute("data-"+currentLang);
+});
+
+document.querySelectorAll(".accordion").forEach(btn=>{
+const text=btn.childNodes[0].nodeValue.trim();
+if(currentLang==="en" && dictionary[text]){
+btn.childNodes[0].nodeValue=dictionary[text]+" ";
+}
+if(currentLang==="ar"){
+for(const ar in dictionary){
+if(dictionary[ar]===text){
+btn.childNodes[0].nodeValue=ar+" ";
+}
+}
+}
+});
+}
+
+/* إضافة تقييم تلقائي لكل صنف */
+document.querySelectorAll(".card-info").forEach(card=>{
+let rating=document.createElement("div");
+rating.className="rating";
+rating.innerHTML="★★★★☆";
+card.appendChild(rating);
+});
 </script>
 
 </body>
 </html>
-
